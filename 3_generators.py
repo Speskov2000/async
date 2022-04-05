@@ -1,38 +1,42 @@
-from time import time
+from time import sleep
 
+# Round Robin
 
-def gen_filename():
-    while True:
-        pattern = 'file-{}.jpeg'
-        t = int(time() * 1000)
-
-        yield pattern.format(str(t))
-
-        sum = 234+23
-        print(sum)
-
-
+# iter string
 def gen1(s):
     for i in s:
         yield i
 
-
+# iter numbers
 def gen2(n):
     for i in range(n):
-        yield i
+        yield i 
+
+# iter numbers reverse
+def gen3(n):
+    for i in range(n):
+        yield n-i 
 
 
-g1 = gen1('oleg')
-g2 = gen2(4)
+tasks = []
+g1 = gen1('ABCDEFG')
+tasks.append(g1)
+g2 = gen2(3)
+tasks.append(g2)
+g3 = gen3(10)
+tasks.append(g3)
 
-tasks = [g1, g2]
+def loop():
+    while tasks:
+        sleep(0.5)
+        task = tasks.pop(0)
+        try:
+            i = next(task)
+            print(f'{task.__name__} - {i}')
+            tasks.append(task)
+        except StopIteration:
+            print(f'Event loop has completed the generator "{task.__name__}"')
 
-while tasks:
-    task = tasks.pop(0)
 
-    try:
-        i = next(task)
-        print(i)
-        tasks.append(task)
-    except StopIteration:
-        pass
+if __name__ == '__main__':
+    loop()
