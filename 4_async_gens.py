@@ -7,7 +7,6 @@ from select import select
 
 
 tasks = []
-
 to_read = {}
 to_write = {}
 
@@ -19,8 +18,7 @@ def server():
     server_socket.listen()
 
     while True:
-
-        yield ('read', server_socket)
+        yield ('read', server_socket)  # stop here
         client_socket, addr = server_socket.accept()  # read
 
         print("Connection from", addr)
@@ -29,16 +27,15 @@ def server():
 
 def client(client_socket):
     while True:
-
-        yield ('read', client_socket)
+        yield ('read', client_socket)  # stop here
         request = client_socket.recv(4096)  # read
 
         if not request:
             break
         else:
-            response = "> My response\n".encode()
+            response = '> My response\n'.encode()
 
-            yield ('write', client_socket)
+            yield ('write', client_socket)  # stop here
             client_socket.send(response)  # write
 
     client_socket.close()
@@ -56,15 +53,16 @@ def event_loop():
 
         try:
             task = tasks.pop(0)
-            reason, sock = next(task)  # ('write', client_socket)
+            purpose, sock = next(task)  # ('write', client_socket)
 
-            if reason == 'read':
+            if purpose == 'read':
                 to_read[sock] = task
-            if reason == 'write':
+            if purpose == 'write':
                 to_write[sock] = task
         except StopIteration:
             print('Done')
 
 
-tasks.append(server())
-event_loop()
+if __name__ == "__main__":
+    tasks.append(server())
+    event_loop()

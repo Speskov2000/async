@@ -1,6 +1,7 @@
 from time import sleep
 
 # Round Robin
+tasks = []
 
 
 # iter string
@@ -21,15 +22,6 @@ def gen3(n):
         yield n-i
 
 
-tasks = []
-g1 = gen1('ABCDEFG')
-tasks.append(g1)
-g2 = gen2(3)
-tasks.append(g2)
-g3 = gen3(10)
-tasks.append(g3)
-
-
 def loop():
     while tasks:
         sleep(0.5)
@@ -43,4 +35,13 @@ def loop():
 
 
 if __name__ == '__main__':
+    g1 = gen1('ABCDEFG')
+    tasks.append(g1)
+
+    g2 = gen2(3)
+    tasks.append(g2)
+
+    g3 = gen3(10)
+    tasks.append(g3)
+
     loop()
